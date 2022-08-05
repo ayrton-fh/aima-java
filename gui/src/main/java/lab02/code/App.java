@@ -15,72 +15,67 @@ import aima.core.environment.map2d.SimplifiedRoadMapOfPartOfRomania;
 
 public class App {
     // Breadth-First-Search
-    public static void useBFS() {
+    public static void useBFS(Problem<GoAction, InState> problem) {
         BreadthFirstSearch<GoAction, InState> bfs = new BreadthFirstSearch<>();
-        Problem<GoAction, InState> problem = ProblemFactory
-                .getSimplifiedRoadMapOfPartOfRomaniaProblem(SimplifiedRoadMapOfPartOfRomania.ARAD, SimplifiedRoadMapOfPartOfRomania.BUCHAREST);
-        List<GoAction> result = bfs.apply(problem);
-        for (Object act : result) System.out.println("State: " + act.toString());
+        List<GoAction> actions = bfs.apply(problem);
+        for (Object act : actions) System.out.println("Action: " + act.toString());
     }
 
     // Uniform-Cost-Search or Dijkstra Algorithm
-    public static void useUCS() {
+    public static void useUCS(Problem<GoAction, InState> problem) {
         UniformCostSearch<GoAction, InState> ucs = new UniformCostSearch<>();
-        Problem<GoAction, InState> problem = ProblemFactory
-                .getSimplifiedRoadMapOfPartOfRomaniaProblem(SimplifiedRoadMapOfPartOfRomania.ARAD, SimplifiedRoadMapOfPartOfRomania.BUCHAREST);
-        List<GoAction> result = ucs.apply(problem);
-        for (Object act : result) System.out.println("State: " + act.toString());
+        List<GoAction> actions = ucs.apply(problem);
+        for (Object act : actions) System.out.println("Action: " + act.toString());
     }
 
     // Depth-Limited-Tree-Search
-    public static void useDLTS(int depthLimit) {
+    public static void useDLTS(Problem<GoAction, InState> problem, int depthLimit) {
         DepthLimitedTreeSearch<GoAction, InState> dlts = new DepthLimitedTreeSearch<>(depthLimit);
-        Problem<GoAction, InState> problem = ProblemFactory
-                .getSimplifiedRoadMapOfPartOfRomaniaProblem(SimplifiedRoadMapOfPartOfRomania.ARAD, SimplifiedRoadMapOfPartOfRomania.BUCHAREST);
         /*
         List<GoAction> actions = Arrays
                 .asList(new GoAction(SimplifiedRoadMapOfPartOfRomania.SIBIU),
                         new GoAction(SimplifiedRoadMapOfPartOfRomania.FAGARAS),
                         new GoAction(SimplifiedRoadMapOfPartOfRomania.BUCHAREST));
         */
-        List<GoAction> result = dlts.apply(problem);
-        for (Object act : result) System.out.println("State: " + act.toString());
+        List<GoAction> actions = dlts.apply(problem);
+        for (Object act : actions) System.out.println("Action: " + act.toString());
     }
 
     // Iterative-Deepening-Search
-    public static void useIDS() {
+    public static void useIDS(Problem<GoAction, InState> problem) {
         IterativeDeepeningSearch<GoAction, InState> ids = new IterativeDeepeningSearch<>();
-        Problem<GoAction, InState> problem = ProblemFactory
-                .getSimplifiedRoadMapOfPartOfRomaniaProblem(SimplifiedRoadMapOfPartOfRomania.ARAD, SimplifiedRoadMapOfPartOfRomania.BUCHAREST);
         /*
         List<GoAction> actions = Arrays
                 .asList(new GoAction(SimplifiedRoadMapOfPartOfRomania.SIBIU),
                         new GoAction(SimplifiedRoadMapOfPartOfRomania.FAGARAS),
                         new GoAction(SimplifiedRoadMapOfPartOfRomania.BUCHAREST));
         */
-        List<GoAction> result = ids.apply(problem);
-        for (Object act : result) System.out.println("State: " + act.toString());
+        List<GoAction> actions = ids.apply(problem);
+        for (Object act : actions) System.out.println("Action: " + act.toString());
     }
 
     public static void main(String[] args) {
+        Problem<GoAction, InState> problem = ProblemFactory
+                .getSimplifiedRoadMapOfPartOfRomaniaProblem(SimplifiedRoadMapOfPartOfRomania.ARAD, SimplifiedRoadMapOfPartOfRomania.BUCHAREST);
+
         System.out.println("--> Simplified RoadMap of Part of Romania Problem");
         System.out.println("Starting Breadth-First-Search...");
-        useBFS();
+        useBFS(problem);
         System.out.println("Finished!");
         System.out.println("------------------------------");
 
         System.out.println("Starting Uniform-Cost-Search or Dijkstra Algorithm...");
-        useUCS();
+        useUCS(problem);
         System.out.println("Finished!");
         System.out.println("------------------------------");
 
         System.out.println("Starting Depth-Limited-Tree-Search...");
-        useDLTS(8);
+        useDLTS(problem, 8);
         System.out.println("Finished!");
         System.out.println("------------------------------");
 
         System.out.println("Starting Iterative-Deepening-Search...");
-        useIDS();
+        useIDS(problem);
         System.out.println("Finished!");
     }
 }
