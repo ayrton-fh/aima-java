@@ -19,55 +19,100 @@ public class App {
         return declareSearch.apply(problem);
     }
 
+    // A*Star Search Modified
+    public static <A, S> List<A> applyAStarSearchModified(Problem<A, S> problem, ToDoubleFunction<Node<A, S>> hf) {
+        SearchForActionsFunction<A, S> declareSearch = new AStarSearchModified<>(hf);
+        return declareSearch.apply(problem);
+    }
+
     public static void main(String[] args) {
-        // Map
+        // map
         Map2D map = new SimplifiedRoadMapOfPartOfRomania();
 
-        // States info
+        // states info
         String initialLocation = SimplifiedRoadMapOfPartOfRomania.ARAD;
         String goal = SimplifiedRoadMapOfPartOfRomania.BUCHAREST;
 
-        // Setting the problem
+        // setting the problem
         Problem<GoAction, InState> problem = ProblemFactory
                 .getSimplifiedRoadMapOfPartOfRomaniaProblem(initialLocation, goal);
 
-        // Heuristic
+        // heuristic
         Map2DFunctionFactory.StraightLineDistanceHeuristic mapFactory = new Map2DFunctionFactory.StraightLineDistanceHeuristic(map, goal);
 
-        // Relation of Costs
+        // relation of costs
         StepCostFunction<GoAction, InState> costs = Map2DFunctionFactory.getStepCostFunction(map);
 
-        // Testing
+        // testing cost relations
         double c1 = costs.stepCost(new InState(SimplifiedRoadMapOfPartOfRomania.ARAD),
                 new GoAction(SimplifiedRoadMapOfPartOfRomania.SIBIU),
                 new InState(SimplifiedRoadMapOfPartOfRomania.SIBIU));
-        System.out.println(c1);
+        System.out.println("Test:\nThe cost of Step ARAD --> SIBIU is " + c1);
 
-        // Actions
+        System.out.println("\n---------- Old A* Search ----------");
+        // execution 1
+        // running A* Search by an method
         List<GoAction> actions = applyAStarSearch(problem, mapFactory);
-        System.out.println("\nNumber of Actions: " + (long) actions.size());
+        System.out.println("\nNumber of Actions: " + (long) actions.size() + "\n");
         System.out.println("List of Actions:");
         for (GoAction action : actions) System.out.println("- Action: " + action.toString());
+        System.out.print("\n");
 
-        // Applying A* Search
+        // execution 2
+        // running directly A* Search
         AStarSearch<GoAction, InState> aStar = new AStarSearch<>(mapFactory);
         Node<GoAction, InState> result = aStar.search(problem);
 
-        // Backtracking Nodes
+        // backtracking Nodes
         List<Node<GoAction, InState>> steps = new ArrayList<>();
+        double totalCost = 0;
         steps.add(result);
         Node<GoAction, InState> current = result;
         for (int i = 0; i < actions.size(); i++) {
             steps.add(current);
+            totalCost += current.pathCost();
             current = current.parent();
         }
 
-        // Reversing Nodes
-        System.out.println("\nSteps:");
+        // reversing Nodes
+        System.out.println("Steps:");
         for (int j = actions.size(); j > 0; j--) System.out.println(steps.get(j));
 
-        // Tests
-        /*
+        // showing total cost
+        System.out.println("\nTotal cost: " + totalCost);
+
+        System.out.println("\n---------- Modified A* Search ----------");
+        // execution 1
+        // running A* Search Modified by an method
+        List<GoAction> modifiedActions = applyAStarSearchModified(problem, mapFactory);
+        System.out.println("\nNumber of Actions: " + (long) modifiedActions.size() + "\n");
+        System.out.println("List of Actions:");
+        for (GoAction action : modifiedActions) System.out.println("- Action: " + action.toString());
+
+        // execution 2
+        // running directly A* Search Modified
+        AStarSearchModified<GoAction, InState> aStarModified = new AStarSearchModified<>(mapFactory);
+        Node<GoAction, InState> resultModified = aStarModified.search(problem);
+        double modifiedTotalCost = 0;
+
+        // expanded nodes
+        System.out.println("\nExpanded nodes:");
+        for (Node<GoAction, InState> expandedNode : aStarModified.expandedNodes) System.out.println(expandedNode);
+
+        // expanded states
+        System.out.println("\nExpanded states:");
+        for (Node<GoAction, InState> expandedNode : aStarModified.expandedNodes) {
+            modifiedTotalCost += expandedNode.pathCost();
+            System.out.println(expandedNode.state());
+        }
+
+        // showing total of expanded nodes
+        System.out.println("\nTotal of expanded nodes: " + aStarModified.numExpandedNodes);
+
+        // showing total expanded cost
+        System.out.println("\nTotal cost: " + modifiedTotalCost);
+
+        /* Tests
         System.out.println("\nResult: " + result.toString());
         System.out.println("\nFinal State: " + result.state());
         System.out.println("\nLast Action: " + result.action());
