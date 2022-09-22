@@ -1,6 +1,7 @@
 package lab06.code;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 
 import aima.core.search.api.CSP;
 import aima.core.search.basic.csp.AC3;
@@ -103,21 +104,93 @@ public class Main {
     }
 
     public static void jobShopSchedule() {
-        int crrtMin = LocalDateTime.now().getMinute();
         String[] tasks = new String[] {"AxleF", "AxleB", "WheelRF", "WheelLF", "WheelRB", "WheelLB", "NutsRF",
                 "NutsLF", "NutsRB", "NutsLB", "CapRF", "CapLF", "CapRB", "CapLB", "Inspect"};
-        int[] domain = new int[] {};
-        for (int i = 0; i < 15; i++) domain[i] = crrtMin;
 
-        // Constraint restriction = new BasicConstraint(tasks,
-          //      values -> (values + (String) values[0]  <= values[1]);
+        Object[] values = new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 };
 
-        // CSP csp = new BasicCSP(tasks, domain, restriction);
+        Object[][] domain = new Object[][] {values, values, values, values, values,
+                                                values, values, values, values, values,
+                                                    values, values, values, values, values};
+
+        // Axis and Wheels
+        Constraint restriction_1 = new BasicConstraint(new String[]{"AxleF", "WheelRF"},
+              v -> ((Integer) v[0] + 10 <= (Integer) v[1]));
+
+        Constraint restriction_2 = new BasicConstraint(new String[]{"AxleF", "WheelLF"},
+                v -> ((Integer) v[0] + 10 <= (Integer) v[1]));
+
+        Constraint restriction_3 = new BasicConstraint(new String[]{"AxleB", "WheelRB"},
+                v -> ((Integer) v[0] + 10 <= (Integer) v[1]));
+
+        Constraint restriction_4 = new BasicConstraint(new String[]{"AxleB", "WheelLB"},
+                v -> ((Integer) v[0] + 10 <= (Integer) v[1]));
+
+        // Wheels and Nuts
+        Constraint restriction_5 = new BasicConstraint(new String[]{"WheelRF", "NutsRF"},
+                v -> ((Integer) v[0] + 1 <= (Integer) v[1]));
+
+        Constraint restriction_6 = new BasicConstraint(new String[]{"WheelLF", "NutsLF"},
+                v -> ((Integer) v[0] + 1 <= (Integer) v[1]));
+
+        Constraint restriction_7 = new BasicConstraint(new String[]{"WheelRB", "NutsRB"},
+                v -> ((Integer) v[0] + 1 <= (Integer) v[1]));
+
+        Constraint restriction_8 = new BasicConstraint(new String[]{"WheelLB", "NutsLB"},
+                v -> ((Integer) v[0] + 1 <= (Integer) v[1]));
+
+        // Nuts and Hubcaps
+        Constraint restriction_9 = new BasicConstraint(new String[]{"NutsRF", "CapRF"},
+                v -> ((Integer) v[0] + 2 <= (Integer) v[1]));
+
+        Constraint restriction_10 = new BasicConstraint(new String[]{"NutsLF", "CapLF"},
+                v -> ((Integer) v[0] + 2 <= (Integer) v[1]));
+
+        Constraint restriction_11 = new BasicConstraint(new String[]{"NutsRB", "CapRB"},
+                v -> ((Integer) v[0] + 2 <= (Integer) v[1]));
+
+        Constraint restriction_12 = new BasicConstraint(new String[]{"NutsLB", "CapLB"},
+                v -> ((Integer) v[0] + 2 <= (Integer) v[1]));
+
+        // Sharing tools
+        Constraint restriction_13 = new BasicConstraint(new String[]{"AxleF", "AxleB"},
+                v -> ((Integer) v[0] + 10 <= (Integer) v[1]) || ((Integer) v[1] + 10 <= (Integer) v[0]));
+
+        List<Constraint> restrictions = new ArrayList<>();
+        restrictions.add(restriction_1);
+        restrictions.add(restriction_2);
+        restrictions.add(restriction_3);
+        restrictions.add(restriction_4);
+        restrictions.add(restriction_5);
+        restrictions.add(restriction_6);
+        restrictions.add(restriction_7);
+        restrictions.add(restriction_8);
+        restrictions.add(restriction_9);
+        restrictions.add(restriction_10);
+        restrictions.add(restriction_11);
+        restrictions.add(restriction_12);
+        restrictions.add(restriction_13);
+
+        // Inspection
+        for (int i = 0; i < 14; i++) {
+            Constraint newRestriction = new BasicConstraint(new String[] {tasks[i], "Inspect"},
+                    v -> ((Integer) v[0] + 3 <= (Integer) v[1]));
+
+            restrictions.add(newRestriction);
+        }
+
+        CSP csp = new BasicCSP(tasks, domain, restrictions.toArray(new Constraint[0]));
+        System.out.println("---------- CSP BEFORE AC3 Algorithm ----------");
+        System.out.println("CSP:\n" + csp);
+
+        AC3 ac3 = new AC3();
+        ac3.test(csp);
+        System.out.println("\n---------- CSP AFTER AC3 Algorithm ----------");
+        System.out.println("CSP:\n" + csp);
     }
 
     public static void main(String[] args) {
         // labExample()
-        // jobShopSchedule();
-
+        jobShopSchedule();
     }
 }
