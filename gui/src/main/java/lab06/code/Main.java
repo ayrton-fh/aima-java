@@ -107,7 +107,7 @@ public class Main {
         String[] tasks = new String[] {"AxleF", "AxleB", "WheelRF", "WheelLF", "WheelRB", "WheelLB", "NutsRF",
                 "NutsLF", "NutsRB", "NutsLB", "CapRF", "CapLF", "CapRB", "CapLB", "Inspect"};
 
-        Object[] values = new Object[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 };
+        Object[] values = new Object[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
 
         Object[][] domain = new Object[][] {values, values, values, values, values,
                                                 values, values, values, values, values,
@@ -186,7 +186,9 @@ public class Main {
         AC3 ac3 = new AC3();
         ac3.test(csp);
         System.out.println("\n---------- CSP AFTER AC3 Algorithm ----------");
-        System.out.println("CSP:\n" + csp);
+        System.out.println("CSP completed:\n" + csp);
+        System.out.println("\nCSP splitted:");
+        for (String task : tasks) System.out.println(task + " - " + csp.getDomainValues(task));
     }
 
     public static void main(String[] args) {
