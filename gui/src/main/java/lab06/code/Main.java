@@ -11,7 +11,7 @@ import aima.core.environment.support.CSPFactory;
 import aima.core.search.basic.support.BasicConstraint;
 
 public class Main {
-    public static void labExample() {
+    private static void labExample() {
         Object[] digits = new Object[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
         String[] variables = new String[] {"X", "Y", "Z"};
@@ -103,7 +103,7 @@ public class Main {
         //------------------------------------------------------------------------------------------
     }
 
-    public static void jobShopSchedule() {
+    private static void jobShopSchedule() {
         String[] tasks = new String[] {"AxleF", "AxleB", "WheelRF", "WheelLF", "WheelRB", "WheelLB", "NutsRF",
                 "NutsLF", "NutsRB", "NutsLB", "CapRF", "CapLF", "CapRB", "CapLB", "Inspect"};
 
